@@ -16,12 +16,9 @@ const NavBar = () => {
       boxShadow={"rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"}
     >
       <Text onClick={()=>{navigate("/dashboard")}} fontWeight={700} color={"green.700"} cursor={"pointer"}>
-        DASHBOARD
+        Exam
       </Text>
-      <Box height="20px" width="2px" bg="grey" borderRadius={"20px"} mx={2} />
-      <Text onClick={()=>{navigate("/profile")}} color={"green.700"} fontWeight={700} cursor={"pointer"}>
-        PROFILE
-      </Text>
+    
     </Flex>
   );
 };

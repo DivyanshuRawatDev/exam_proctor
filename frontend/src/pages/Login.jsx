@@ -44,7 +44,7 @@ const Login = () => {
       align="center"
       justify="center"
       px={4}
-      bgImage="url('https://images.pexels.com/photos/1118667/pexels-photo-1118667.jpeg?cs=srgb&dl=pexels-cody-king-433493-1118667.jpg&fm=jpg')"
+      // bgImage="url('https://images.pexels.com/photos/1118667/pexels-photo-1118667.jpeg?cs=srgb&dl=pexels-cody-king-433493-1118667.jpg&fm=jpg')"
       bgSize="cover"
       bgPosition="center"
       bgRepeat="no-repeat"
@@ -95,6 +95,7 @@ const Login = () => {
           >
             {isLoading ? <Spinner size="md" color="green.500" /> : "LOGIN"}
           </Button>
+          <Text color={"black"}>new here? <span onClick={()=>{navigate("/signup")}} style={{color:"blue"}}>Signup</span></Text>
         </Box>
       </Box>
     </Flex>

@@ -40,7 +40,7 @@ const Signup = () => {
       minH="100vh"
       align="center"
       justify="center"
-      bgImage="url('https://images.pexels.com/photos/1118667/pexels-photo-1118667.jpeg?cs=srgb&dl=pexels-cody-king-433493-1118667.jpg&fm=jpg')"
+      // bgImage="url('https://images.pexels.com/photos/1118667/pexels-photo-1118667.jpeg?cs=srgb&dl=pexels-cody-king-433493-1118667.jpg&fm=jpg')"
       bgSize="cover"
       bgPosition="center"
       bgRepeat="no-repeat"
@@ -102,6 +102,8 @@ const Signup = () => {
           >
             {isLoading ? <Spinner size="md" color="green.500" /> : "SIGNUP"}
           </Button>
+         
+          <Text color={"black"}>Already a member? <span onClick={()=>{navigate("/login")}} style={{color:"blue"}}>Login</span></Text>
         </Box>
       </Box>
     </Flex>
