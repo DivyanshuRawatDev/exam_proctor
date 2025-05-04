@@ -17,8 +17,8 @@ const app = express();
 const server = http.createServer(app);
 app.use(
   cors({
-    // origin: "http://localhost:5173",
-    origin: "https://exam-proctor-o7pe.onrender.com",
+    origin: "https://mellow-capybara-be3228.netlify.app",
+    // origin: "https://exam-proctor-o7pe.onrender.com",
     credentials: true,
   })
 );
@@ -34,8 +34,8 @@ app.use("/api", authentication, exams);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://exam-proctor-o7pe.onrender.com",
-    // origin: "http://localhost:5173",
+    // origin: "https://exam-proctor-o7pe.onrender.com",
+    origin: "https://mellow-capybara-be3228.netlify.app",
     credentials: true,
   },
 });
