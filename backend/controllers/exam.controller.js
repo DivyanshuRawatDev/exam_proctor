@@ -1,46 +1,45 @@
+// controllers/uploadController.js
 const { cloudinary } = require("../utils/cloudinary");
-const fs = require("fs");
-const path = require("path");
+const streamifier = require("streamifier");
 const { UserModel } = require("../models/user.model");
 
-const uploadIDProof = async (req, res) => {
-  const filePath = req.file?.path;
-  const userId = req.userId;
-  try {
-    if (!filePath) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
-
-    const uploadResult = await cloudinary.uploader
-      .upload(filePath, {
-        public_id: "proof_id",
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.error("Failed to delete file from disk:", err);
-      } else {
-        console.log("Temporary file deleted:", filePath);
+async function uploadToCloudinary(buffer, publicId) {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { public_id: publicId },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
       }
-    });
+    );
+    streamifier.createReadStream(buffer).pipe(uploadStream);
+  });
+}
 
-    if (!uploadResult) {
-      return res.status(400).json({ message: "Internal server err" });
-    }
+const uploadIDProof = async (req, res) => {
+  const fileBuffer = req.file?.buffer;
+  const userId = req.userId;
 
-    const user = await UserModel.findOne({ _id: userId });
+  if (!fileBuffer) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
 
+  try {
+    // upload the in-memory buffer
+    const uploadResult = await uploadToCloudinary(fileBuffer, "proof_id");
+
+    // update user record
+    const user = await UserModel.findById(userId);
     user.uploadedIdUrl = uploadResult.secure_url;
     user.status = "pending_camera";
     await user.save();
+
     return res
       .status(200)
-      .json({ success: true, message: "Uploaded Success", data: user });
+      .json({ success: true, message: "Upload successful", data: user });
   } catch (error) {
-    console.log("Error while uploadIDProof : " + error.message);
+    console.error("Error in uploadIDProof:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

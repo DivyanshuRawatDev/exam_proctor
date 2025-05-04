@@ -17,7 +17,8 @@ const app = express();
 const server = http.createServer(app);
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    // origin: "http://localhost:5173",
+    origin: "https://exam-proctor-o7pe.onrender.com",
     credentials: true,
   })
 );
@@ -33,42 +34,40 @@ app.use("/api", authentication, exams);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://exam-proctor-o7pe.onrender.com",
+    // origin: "http://localhost:5173",
     credentials: true,
   },
 });
 
-io.on('connection', socket => {
-  console.log('Socket connected:', socket.id);
+io.on("connection", (socket) => {
+  console.log("Socket connected:", socket.id);
 
-  socket.on('join_room', roomId => {
+  socket.on("join_room", (roomId) => {
     socket.join(roomId);
     console.log(`${socket.id} joined`, roomId);
   });
 
-  socket.on('offer', ({ roomId, offer }) => {
-    // tag it with the sender’s socket.id
-    socket.to(roomId).emit('offer', {
+  socket.on("offer", ({ roomId, offer }) => {
+    socket.to(roomId).emit("offer", {
       offer,
-      studentId: socket.id
+      studentId: socket.id,
     });
   });
 
-  socket.on('answer', ({ roomId, answer, studentId }) => {
-    // send answer back to that specific student
-    io.to(studentId).emit('answer', { answer });
+  socket.on("answer", ({ roomId, answer, studentId }) => {
+    io.to(studentId).emit("answer", { answer });
   });
 
-  socket.on('ice-candidate', ({ roomId, candidate, studentId }) => {
-    // broadcast to everyone else in room
-    socket.to(roomId).emit('ice-candidate', {
+  socket.on("ice-candidate", ({ roomId, candidate, studentId }) => {
+    socket.to(roomId).emit("ice-candidate", {
       candidate,
-      studentId
+      studentId,
     });
   });
 
-  socket.on('disconnect', () => {
-    console.log('Socket disconnected:', socket.id);
+  socket.on("disconnect", () => {
+    console.log("Socket disconnected:", socket.id);
   });
 });
 
